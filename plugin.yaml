@@ -1,0 +1,66 @@
+name: dotnet-repository-app-plugin
+description: Plugin para instrumentar o AWS DynamoDB.
+types:
+- app
+inputs:
+- label: Region Endpoint
+  type: text
+  name: region_endpoint
+  default: "sa-east-1"
+
+computed-inputs:
+  base_path: "{% if global_computed_inputs.src_base_path is defined and global_computed_inputs.src_base_path != '' %}{{global_computed_inputs.src_base_path}}{% else %}{{'.'}}{% endif %}"
+
+hooks:
+#package
+  - type: run
+    trigger: before-render
+    commands:
+      - dotnet add {{computed_inputs.base_path}}/src/{{global_inputs.project_name}}.Application package StackSpot.Database.DynamoDB
+      - dotnet add {{computed_inputs.base_path}}/src/{{global_inputs.project_name}}.Infrastructure package StackSpot.Database.DynamoDB
+#dependencyinjection
+  - type: edit
+    trigger: before-render
+    path: "{{computed_inputs.base_path}}/src/{{project_name}}.Application/Common/StackSpot/DependencyInjection.cs"
+    changes:
+      - search:
+          string: "using"
+          insert-before:
+            value: "using StackSpot.Database.DynamoDB;"
+          when:
+            not-exists: "using StackSpot.Database.DynamoDB;"
+      - search:
+          string: "return services"
+          insert-before:
+            value: "services.AddDynamoDB(configuration);\n"
+          when:
+            not-exists: "services.AddDynamoDB(configuration);"
+#format
+  - type: run
+    trigger: after-render
+    working-dir: "{{computed_inputs.base_path}}/src/{{project_name}}.Application"
+    commands:
+      -  dotnet dotnet-format --include-generated
+
+displayName: Repository
+
+picture: "plugin.png"
+
+category: Backend, Database
+
+compatibility:
+  - net5.0
+  - net6.0
+
+about: docs/about.md
+
+usage: docs/usage.md
+
+useCase: docs/use-case.md
+
+implementation: docs/implementation.md
+
+technologies: 
+  - .NET
+  - C#
+  - AWS S3

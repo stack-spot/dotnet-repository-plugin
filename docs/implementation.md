@@ -1,13 +1,3 @@
-## **Visão Geral**
-O **repository-app-cs-plugin** adiciona em uma stack a capacidade de provisionar o uso do Amazon DynamoDB seja recuperando, salvando ou apagando entidades.
-
-#### **Pré-requisitos**
-Para utilizar esse plugin é necessário ter uma stack dotnet criada pelo `CLI` do `StackSpot` que você pode baixar [**aqui**](https://stackspot.com/).
-
-Ter instalado:
-- .NET 5 ou 6 
-- O template `dotnet-api-template` ou o `dotnet-worker-template` deverá estar aplicado para você conseguir utilizar este plugin.
-
 #### **Inputs**
 
 * RegionEndpoint - Endpoint regional que será utilizado para requisitar o DynamoDB - Campo Obrigatório.
