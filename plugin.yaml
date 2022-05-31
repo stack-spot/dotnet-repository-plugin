@@ -1,4 +1,4 @@
-name: dotnet-repository-app-plugin
+name: dotnet-repository-plugin
 description: Plugin para instrumentar o AWS DynamoDB.
 types:
 - app

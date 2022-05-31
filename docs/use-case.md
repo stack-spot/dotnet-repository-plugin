@@ -1,1 +1,1 @@
-O **dotnet-repository-app-plugin** adiciona em uma stack a capacidade de provisionar o uso do Amazon DynamoDB seja recuperando, salvando ou apagando entidades.
+O **dotnet-repository-plugin** adiciona em uma stack a capacidade de provisionar o uso do Amazon DynamoDB seja recuperando, salvando ou apagando entidades.
