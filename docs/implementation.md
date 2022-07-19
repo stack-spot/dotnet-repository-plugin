@@ -1,8 +1,8 @@
-#### **Inputs**
+#### **Inputs configurados automaticamente**  
+- **`RegionEndpoint`**  
+É o endpoint regional que será utilizado para requisitar o **DynamoDB**. 
 
-* RegionEndpoint - Endpoint regional que será utilizado para requisitar o DynamoDB - Campo Obrigatório.
-
-Você pode sobrescrever a configuração padrão adicionando a seção `DynamoDB` em seu `appsettings.json`. Os valores aceitáveis você pode encontrar [aqui](https://docs.aws.amazon.com/pt_br/pt_br/AWSEC2/latest/WindowsGuide/using-regions-availability-zones.html#concepts-available-regions).
+É possível sobrescrever a configuração padrão adicionando a seção `DynamoDB` no seu **`appsettings.json`**. Confira abaixo:  
 
 ```json
   "DynamoDB": {
@@ -10,17 +10,22 @@ Você pode sobrescrever a configuração padrão adicionando a seção `DynamoDB
   }
 ```
 
-Adicione ao seu `IServiceCollection` via `services.AddDynamoDB()` no `Startup` da aplicação ou `Program` tendo como parêmetro de entrada `IConfiguration` e `IWebHostEnvironment`. 
+> Os valores aceitáveis são encontrados [aqui](https://docs.aws.amazon.com/pt_br/pt_br/AWSEC2/latest/WindowsGuide/using-regions-availability-zones.html#concepts-available-regions).
+
+
+- A configuração abaixo será feita no `IServiceCollection`, através do `services.AddDynamoDB()`, no `Startup` da aplicação ou `Program`. Ela terá **`IConfiguration`** e **`IWebHostEnvironment`** como parâmetros de entrada. 
 
 ```csharp
 services.AddDynamoDB(Configuration);
 ```
 
-#### **Operações**
+#### **Exemplos de aplicação do plugin**  
 
-* A classe que será utilizada para o mapeamento da tabela deverá ter a anotação `DynamoDBTable`, é aqui que definimos o nome da tabela. 
-* A chave de partição e a chave de classificação(se presente) devem ter, respectivamente, as anotações no nível de propriedade `DynamoDBRangeKey` e `DynamoDBRangeKey`.
-* Propriedades regulares devem ser marcadas com a anotação `DynamoDBProperty`, que aceita um parâmetro opcional para especificar um nome para a coluna da tabela distinto do nome da propriedade.
+- A classe que será utilizada a seguir para o mapeamento da tabela deverá ter a anotação `DynamoDBTable` que definirá o nome da tabela;   
+- A chave de partição e a chave de classificação (se houver) devem ter, respectivamente, as anotações no nível de propriedade **`DynamoDBRangeKey`** e **`DynamoDBRangeKey`**;  
+- As propriedades regulares deverão ser marcadas com a anotação **`DynamoDBProperty`**, que aceita um parâmetro opcional para especificar um nome para a coluna da tabela distinto do nome da propriedade.
+
+Confira abaixo alguns exemplos de aplicação do plugin:  
 
 ```csharp
 [DynamoDBTable("Test")]
@@ -45,7 +50,8 @@ public class Test
 }
 ```
 
-*  SaveAsync - Utilizado para criar ou atualizar a entidade na tabela(Se a entidade existir na tabela, ele atualizada, do contrário ela é criada).
+- **`SaveAsync`**  
+É utilizado para criar ou atualizar a entidade na tabela. Se a entidade estiver na tabela, ela é atualizada. Se não, a tabela é criada. Confira a execução abaixo:  
 
 ```csharp
 public class TestRepository : ITestRepository
@@ -66,7 +72,8 @@ public class TestRepository : ITestRepository
     }
 ```
 
-*  QueryAsync - Utilizado para recuperar uma ou mais entidades. Ele aceita apenas um parâmetro `QueryConfig`, que é utilizado como filtro.
+- **`QueryAsync`**
+É utilizado para recuperar uma ou mais entidades. Ele aceita apenas um parâmetro: **`QueryConfig`**, que é utilizado como filtro. Confira a execução abaixo:  
 
 ```csharp
 public class TestRepository : ITestRepository
@@ -91,7 +98,13 @@ public class TestRepository : ITestRepository
 }
 ```
 
-*  LoadAsync - Utilizado para recuperar uma entidade. Existem duas opções, uma utilizando a própria entidade a ser recuperada e outra utilizando a chave de partição e a chave de classificação(caso a tabela tenha).
+- **`LoadAsync`**  
+Utilizado para recuperar uma entidade. Para isso existem duas opções:
+
+1. Utilizando a própria entidade a ser recuperada;
+2. Utilizando a chave de partição e a chave de classificação (caso a tabela tenha).
+
+Confira a execução abaixo:  
 
 ```csharp
 public class TestRepository : ITestRepository
@@ -115,7 +128,13 @@ public class TestRepository : ITestRepository
 }
 ```
 
-*  DeleteAsync - Utilizado para excluir fisicamente uma entidade. Existem duas opções, uma utilizando a própria entidade a ser excluída e outra utilizando a chave de partição e a chave de classificação(necessário caso a tabela tenha).
+- **`DeleteAsync`**
+É utilizado para excluir fisicamente uma entidade. Para isso existem duas opções:
+
+1. Itilizando a própria entidade a ser excluída;
+2. Utilizando a chave de partição e a chave de classificação (caso a tabela tenha).  
+
+Confira a execução abaixo:  
 
 ```csharp
 public class TestRepository : ITestRepository
@@ -139,12 +158,14 @@ public class TestRepository : ITestRepository
 }
 ```
 
-#### 4. Ambiente local
+#### **Execução em Ambiente local**  
 
-* Esta etapa não é obrigatória.
-* Recomendamos, para o desenvolvimento local, a criação de um contâiner com a imagem do [Localstack](https://github.com/localstack/localstack). 
-* Para o funcionamento local você deve preencher a variável de ambiente `LOCALSTACK_CUSTOM_SERVICE_URL` com o valor da url do serviço. O valor padrão do localstack é http://localhost:4566.
-* Abaixo um exemplo de arquivo `docker-compose` com a criação do contâiner: 
+Para que o plugin funcione localmente, siga os passos abaixo:
+
+1. Crie um contêiner com a imagem do imagem do [LocalStack](https://github.com/localstack/localstack);  
+2. Preencha a variável de ambiente **`LOCALSTACK_CUSTOM_SERVICE_URL`** com o valor da URL do serviço. O valor padrão do LocalStack é **http://localhost:4566**.
+
+Confira baixo um exemplo de arquivo `docker-compose` depois da criação do contêiner:  
 
 ```yaml
 version: '2.1'
@@ -160,7 +181,11 @@ services:
       - DEFAULT_REGION=sa-east-1
 ```
 
-Após a criação do contâiner, crie uma tabela para realizar os testes com o componente. Recomendamos que você tenha instalado em sua estação o [AWS CLI](https://aws.amazon.com/pt/cli/). Abaixo um exemplo de comando para criação de uma tabela:
+Depois que o contêiner foi criado, crie uma tabela para fazer os testes com o componente. 
+
+É recomendado que você tenha instalado em sua estação o [**AWS CLI**](https://aws.amazon.com/pt/cli/). 
+
+Confira abaixo um exemplo de comando para criar uma tabela:  
 
 ```bash
 aws --endpoint-url=http://localhost:4566 --region=sa-east-1 dynamodb create-table --table-name [NOME DA TABELA] --attribute-definitions AttributeName=[NOME DO ATRIBUTO],AttributeType=[TIPO DO ATRIBUTO] --key-schema AttributeName=[NOME DO ATRIBUTO],KeyType=[TIPO DA KEY] --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5

@@ -1,6 +1,6 @@
 #### **Pré-requisitos**
-Para utilizar esse plugin é necessário ter uma stack dotnet criada pelo `CLI` do `StackSpot` que você pode baixar [**aqui**](https://stackspot.com/).
+Para utilizar este plugin é preciso ter instalado na sua máquina os itens abaixo:  
 
-Ter instalado:
+- Uma Stack **DotNET** criada pelo [**STK CLI**](https://stackspot.com/);  
 - .NET 5 ou 6 
-- O template `dotnet-api-template` ou o `dotnet-worker-template` deverá estar aplicado para você conseguir utilizar este plugin.
+- O template `dotnet-api-template` ou o `dotnet-worker-template` já instalados.
